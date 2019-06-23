@@ -7,12 +7,14 @@ Button::Button(const char* newButtonText, float x, float y, float _width, float 
 	//Store the text that will appear on the button.
 	strcpy_s(buttonText, 64, newButtonText);
 	//Load a font to use to display the text.
-	currentFont = new aie::Font("./font/consolas.ttf", 24);
+	currentFont = new aie::Font("../bin/font/consolas.ttf", 32);
 	//Store the button's position, width, and height.
 	posX = x;
 	posY = y;
 	width = _width;
 	height = _height;
+
+	hover = false;
 }
 
 
@@ -24,7 +26,12 @@ Button::~Button()
 void Button::Draw(aie::Renderer2D* renderer)
 {
 	//Draw a coloured box for the button background.
-	renderer->setRenderColour(0.0f, 0.5f, 0.7f, 1.0f);
+	if (hover == true) {
+		renderer->setRenderColour(1.0f, 0.5f, 0.4f, 1.0f);
+	}
+	else {
+		renderer->setRenderColour(0.0f, 0.5f, 0.4f, 0.7f);
+	}
 	renderer->drawBox(posX, posY, width, height);
 	renderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -52,8 +59,13 @@ bool Button::Update()
 	if (mouseX > left && mouseX < right &&
 		mouseY > bottom && mouseY < top)
 	{
+		hover = true;
 		//Return whether the mouse button is clicked while colliding
 		return input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT);
+	}
+	else {
+
+		hover = false;
 	}
 	return false;
 }

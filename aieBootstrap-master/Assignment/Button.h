@@ -15,6 +15,7 @@ public:
 	bool Update();
 
 private:
+	bool hover;
 	//Font and text for the button.
 	aie::Font* currentFont;
 	char buttonText[64];

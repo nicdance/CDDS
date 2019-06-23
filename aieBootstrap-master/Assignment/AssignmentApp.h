@@ -41,11 +41,17 @@ public:
 	void drawGameOver(aie::Renderer2D* renderer);
 	void drawScoreBoard(aie::Renderer2D* renderer);
 
+	void drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset);
+
 protected:
 	GameState currentGameState;
 
 	aie::Renderer2D*	m_2dRenderer;
+	aie::Font*			splashFont;
 	aie::Font*			mainFont;
 	aie::Font*			headingFont;
-	Button*				menuButton;
+	Button*				playButton;
+	Button*				exitButton;
+	Button*				optionsButton;
+	Button*				mainMenuButton;
 };

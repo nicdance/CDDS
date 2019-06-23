@@ -17,11 +17,15 @@ bool AssignmentApp::startup() {
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
+	splashFont = new aie::Font("../bin/font/pricedown_bl.ttf", 300);
 	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
-	headingFont = new aie::Font("../bin/font/consolas.ttf", 100);
+	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
 
-	menuButton = new Button("Play", 400, 400, 120, 50);
+	playButton = new Button("Play Game", getWindowWidth() / 2, getWindowHeight() / 2 - 100, 200, 50);
+	optionsButton = new Button("Options", getWindowWidth() / 2, getWindowHeight() / 2 - 155, 200, 50);
+	exitButton = new Button("Exit Game", getWindowWidth() / 2, getWindowHeight() / 2 - 210, 200, 50);
 
+	mainMenuButton = new Button("Go Back", getWindowWidth() / 2, getWindowHeight() / 2 - 100, 200, 50);
 	return true;
 }
 
@@ -29,7 +33,8 @@ void AssignmentApp::shutdown() {
 	delete mainFont;
 	delete headingFont;
 	delete m_2dRenderer;
-	delete menuButton;
+	delete playButton;
+	delete mainMenuButton;
 }
 
 void AssignmentApp::update(float deltaTime) {
@@ -85,11 +90,21 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 	else if (input->isKeyDown(aie::INPUT_KEY_O)) {
 		currentGameState = OPTIONS_MENU;
 	}
-
-	if (menuButton->Update())
+	
+	if (playButton->Update())
 	{
 		//Replace this with whatever the button should do.
 		currentGameState=GAME_PLAY;
+	}
+	if (exitButton->Update())
+	{
+		//Replace this with whatever the button should do.
+		quit();
+	}
+	if (optionsButton->Update())
+	{
+		//Replace this with whatever the button should do.
+		currentGameState = OPTIONS_MENU;
 	}
 }
 
@@ -97,11 +112,9 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 void AssignmentApp::updateOptionsMenu(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
-	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
-		quit();
-	}
-	else if (input->isKeyDown(aie::INPUT_KEY_M)) {
+	if (mainMenuButton->Update())
+	{
+		//Replace this with whatever the button should do.
 		currentGameState = MAIN_MENU;
 	}
 }
@@ -182,40 +195,47 @@ void AssignmentApp::draw() {
 	m_2dRenderer->end();
 }
 
+void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset){
+
+	//Calculating the centred text position is a bit fiddly.
+	float textWidth = currentFont->getStringWidth(textToDisplay);
+	float textHeight = currentFont->getStringHeight(textToDisplay);
+	float centredPosX = xOffset - (textWidth * 0.5f) + 2;
+	float centredPosY = yOffset - (textHeight * 0.5f) + 5;
+
+	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
+}
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Simon", 530, 310);
-	renderer->drawText(headingFont, "Press Enter", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
+	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2, 20);
 }
 
 void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Main Menu", 530, 310);
-	renderer->drawText(headingFont, "Press P or O", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer, "Main Menu", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
 
-	menuButton->Draw(renderer);
+	playButton->Draw(renderer);
+	optionsButton->Draw(renderer);
+	exitButton->Draw(renderer);
 }
 
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Game Play", 530, 310);
-	renderer->drawText(headingFont, "Press G", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer, "Game Play", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
 }
 
 void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Options Menu", 530, 310);
-	renderer->drawText(headingFont, "Press M", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer, "Options Menu", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+
+	mainMenuButton->Draw(renderer);
 }
 
 void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Game Over", 530, 310);
-	renderer->drawText(headingFont, "Press S", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer, "Game Over", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
 }
 
 void AssignmentApp::drawScoreBoard(aie::Renderer2D* renderer) {
-	renderer->drawText(headingFont, "Score", 530, 310);
-	renderer->drawText(headingFont, "Press M", 530, 210);
-	m_2dRenderer->drawText(mainFont, "Press ESC to quit", 0, 0);
+	drawText(renderer, "Score", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
 }
