@@ -1,6 +1,9 @@
 #include "Button.h"
 #include <string.h>
 
+Button::Button()
+{
+}
 
 Button::Button(const char* newButtonText, float x, float y, float _width, float _height)
 {

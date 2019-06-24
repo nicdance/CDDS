@@ -2,7 +2,11 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "Texture.h"
 #include "Button.h"
+#include "CircleButton.h"
+
+#include <vector> 
 
 enum GameState
 {
@@ -50,8 +54,16 @@ protected:
 	aie::Font*			splashFont;
 	aie::Font*			mainFont;
 	aie::Font*			headingFont;
+	aie::Texture*		mainBackground;
 	Button*				playButton;
 	Button*				exitButton;
 	Button*				optionsButton;
 	Button*				mainMenuButton;
+	CircleButton*		circleOne;
+	CircleButton*		circleTwo;
+	CircleButton*		circleThree;
+	CircleButton*		circleFour;
+
+
+	std::vector<int>	sequence;
 };

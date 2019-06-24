@@ -5,6 +5,7 @@
 class Button
 {
 public:
+	Button();
 	Button(const char* newButtonText, float x, float y, float _width, float _height);
 	~Button();
 
@@ -14,7 +15,7 @@ public:
 	// Check if Button was presed
 	bool Update();
 
-private:
+protected:
 	bool hover;
 	//Font and text for the button.
 	aie::Font* currentFont;

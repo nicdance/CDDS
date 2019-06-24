@@ -4,7 +4,6 @@ int main() {
 	
 	// allocation
 	auto app = new AssignmentApp();
-
 	// initialise and loop
 	app->run("AIE", 1280, 720, false);
 

@@ -21,20 +21,35 @@ bool AssignmentApp::startup() {
 	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
 	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
 
-	playButton = new Button("Play Game", getWindowWidth() / 2, getWindowHeight() / 2 - 100, 200, 50);
-	optionsButton = new Button("Options", getWindowWidth() / 2, getWindowHeight() / 2 - 155, 200, 50);
-	exitButton = new Button("Exit Game", getWindowWidth() / 2, getWindowHeight() / 2 - 210, 200, 50);
+	playButton = new Button("Play Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
+	optionsButton = new Button("Options", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 155.0f, 200.0f, 50.0f);
+	exitButton = new Button("Exit Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 210.0f, 200.0f, 50.0f);
+	mainMenuButton = new Button("Go Back", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
 
-	mainMenuButton = new Button("Go Back", getWindowWidth() / 2, getWindowHeight() / 2 - 100, 200, 50);
+	mainBackground = new aie::Texture("../bin/textures/cloud.png");
+
+	circleOne = new CircleButton(1,getWindowWidth() / 2.0f+75.0f, getWindowHeight() / 2.0f,50.0f);
+	circleTwo = new CircleButton(2, getWindowWidth() / 2.0f-75.0f, getWindowHeight() / 2.0f, 50.0f);
+	circleThree = new CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+75.0f, 50.0f);
+	circleFour = new CircleButton(4, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f-75.0f, 50.0f);
+
 	return true;
 }
 
 void AssignmentApp::shutdown() {
+	delete m_2dRenderer;
+	delete splashFont;
 	delete mainFont;
 	delete headingFont;
-	delete m_2dRenderer;
+	delete mainBackground;
 	delete playButton;
+	delete exitButton;
+	delete optionsButton;
 	delete mainMenuButton;
+	delete circleOne;
+	delete circleTwo;
+	delete circleThree;
+	delete circleFour;
 }
 
 void AssignmentApp::update(float deltaTime) {
@@ -130,6 +145,30 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 	else if (input->isKeyDown(aie::INPUT_KEY_G)) {
 		currentGameState = GAME_OVER;
 	}
+
+	if (circleOne->Update())
+	{
+		//Replace this with whatever the button should do.
+		sequence.push_back(circleOne->getNumber());
+	}
+	if (circleTwo->Update())
+	{
+		//Replace this with whatever the button should do.
+
+		sequence.push_back(circleTwo->getNumber());
+	}
+	if (circleThree->Update())
+	{
+		//Replace this with whatever the button should do.
+
+		sequence.push_back(circleThree->getNumber());
+	}
+	if (circleFour->Update())
+	{
+		//Replace this with whatever the button should do.
+
+		sequence.push_back(circleFour->getNumber());
+	}
 }
 void AssignmentApp::updateGameOver(float deltaTime) {
 
@@ -196,8 +235,6 @@ void AssignmentApp::draw() {
 }
 
 void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset){
-
-	//Calculating the centred text position is a bit fiddly.
 	float textWidth = currentFont->getStringWidth(textToDisplay);
 	float textHeight = currentFont->getStringHeight(textToDisplay);
 	float centredPosX = xOffset - (textWidth * 0.5f) + 2;
@@ -206,13 +243,14 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
 }
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
-	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2, getWindowHeight() / 2);
-	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
-	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2, 20);
+	renderer->drawSprite(mainBackground, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
+	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
+	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
+	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2.0f, 20.0f);
 }
 
 void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
-	drawText(renderer, "Main Menu", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Main Menu", headingFont, getWindowWidth() / 2.0f, getWindowHeight() *.75f);
 
 	playButton->Draw(renderer);
 	optionsButton->Draw(renderer);
@@ -220,22 +258,27 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 }
 
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
-	drawText(renderer, "Game Play", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
-	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
+	drawText(renderer, "Score", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
+	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
+
+	circleOne->Draw(renderer);
+	circleTwo->Draw(renderer);
+	circleThree->Draw(renderer);
+	circleFour->Draw(renderer);
 }
 
 void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {
-	drawText(renderer, "Options Menu", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
+	drawText(renderer, "Options Menu", headingFont, getWindowWidth() / 2.0f, getWindowHeight()  *.75f);
 
 	mainMenuButton->Draw(renderer);
 }
 
 void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
-	drawText(renderer, "Game Over", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
-	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
+	drawText(renderer, "Game Over", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
+	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
 }
 
 void AssignmentApp::drawScoreBoard(aie::Renderer2D* renderer) {
-	drawText(renderer, "Score", headingFont, getWindowWidth() / 2, getWindowHeight() / 2);
-	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2, getWindowHeight() / 3);
+	drawText(renderer, "Score", headingFont, getWindowWidth() / 2.0f, getWindowHeight()  *.75f);
+	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
 }
