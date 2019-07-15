@@ -12,6 +12,8 @@ AssignmentApp::~AssignmentApp() {
 }
 
 bool AssignmentApp::startup() {
+	float circleRadius = 75.0f;
+	float circleOffSet = circleRadius*1.5;
 	currentGameState = SPLASH_SCREEN;
 	m_2dRenderer = new aie::Renderer2D();
 
@@ -28,10 +30,14 @@ bool AssignmentApp::startup() {
 
 	mainBackground = new aie::Texture("../bin/textures/cloud.png");
 
-	circleOne = new CircleButton(1,getWindowWidth() / 2.0f+75.0f, getWindowHeight() / 2.0f,50.0f);
-	circleTwo = new CircleButton(2, getWindowWidth() / 2.0f-75.0f, getWindowHeight() / 2.0f, 50.0f);
-	circleThree = new CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+75.0f, 50.0f);
-	circleFour = new CircleButton(4, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f-75.0f, 50.0f);
+	circleOne = new CircleButton(1,getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius);
+	circleOne->setColour(1.0f,0.0f,0.0f, 0.2f);
+	circleTwo = new CircleButton(2, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius);
+	circleTwo->setColour(0.0f, 1.0f, 0.0f, 0.2f);
+	circleThree = new CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius);
+	circleThree->setColour(0.0f, 0.0f, 1.0f, 0.2f);
+	circleFour = new CircleButton(4, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius);
+	circleFour->setColour(1.0f, 1.0f, 0.0f, 0.2f);
 
 	return true;
 }
@@ -245,7 +251,7 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
 	renderer->drawSprite(mainBackground, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
 	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
-	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
+	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2.0f, 20.0f);
 }
 
@@ -259,7 +265,7 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	drawText(renderer, "Score", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
-	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
+	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 
 	circleOne->Draw(renderer);
 	circleTwo->Draw(renderer);
@@ -275,10 +281,10 @@ void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {
 
 void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
 	drawText(renderer, "Game Over", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
-	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
+	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 }
 
 void AssignmentApp::drawScoreBoard(aie::Renderer2D* renderer) {
 	drawText(renderer, "Score", headingFont, getWindowWidth() / 2.0f, getWindowHeight()  *.75f);
-	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
+	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 }
