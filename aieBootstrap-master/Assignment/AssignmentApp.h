@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Button.h"
 #include "CircleButton.h"
+#include "ScrollingBackground.h"
 
 #include <vector> 
 
@@ -55,6 +56,7 @@ protected:
 	aie::Font*			mainFont;
 	aie::Font*			headingFont;
 	aie::Texture*		mainBackground;
+	ScrollingBackground* background;
 	Button*				playButton;
 	Button*				exitButton;
 	Button*				optionsButton;

@@ -2,10 +2,13 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
+#include <iostream>
 
 AssignmentApp::AssignmentApp() {
 
 }
+
+
 
 AssignmentApp::~AssignmentApp() {
 
@@ -28,7 +31,13 @@ bool AssignmentApp::startup() {
 	exitButton = new Button("Exit Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 210.0f, 200.0f, 50.0f);
 	mainMenuButton = new Button("Go Back", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
 
+	background = new ScrollingBackground[3];
 	mainBackground = new aie::Texture("../bin/textures/cloud.png");
+	for (int i = 0; i < 3; i++)
+	{
+		background[i] = ScrollingBackground(mainBackground->getWidth() / 2 + (mainBackground->getWidth()*i), 
+						getWindowHeight() / 2, mainBackground);
+	}
 
 	circleOne = new CircleButton(1,getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius);
 	circleOne->setColour(1.0f,0.0f,0.0f, 0.2f);
@@ -56,6 +65,7 @@ void AssignmentApp::shutdown() {
 	delete circleTwo;
 	delete circleThree;
 	delete circleFour;
+	delete[] background;
 }
 
 void AssignmentApp::update(float deltaTime) {
@@ -96,6 +106,13 @@ void AssignmentApp::updateSplashScreen(float deltaTime){
 	else if (input->isKeyDown(aie::INPUT_KEY_ENTER)) {
 		currentGameState = MAIN_MENU;
 	}
+
+	// Move Each background image
+	for (int i = 0; i < 3; i++)
+	{
+		background[i].Move(50, deltaTime, i);
+	}
+
 }
 
 void AssignmentApp::updateMainMenu(float deltaTime) {
@@ -127,6 +144,7 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 		//Replace this with whatever the button should do.
 		currentGameState = OPTIONS_MENU;
 	}
+
 }
 
 
@@ -139,7 +157,6 @@ void AssignmentApp::updateOptionsMenu(float deltaTime) {
 		currentGameState = MAIN_MENU;
 	}
 }
-
 void AssignmentApp::updateGamePlay(float deltaTime) {
 
 	// input example
@@ -249,10 +266,17 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
 }
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
-	renderer->drawSprite(mainBackground, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
+	
+	// Draw each background
+	for (int i = 0; i < 3; i++)
+	{
+		background[i].Draw(renderer);
+	}
+	
 	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
 	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2.0f, 20.0f);
+
 }
 
 void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
