@@ -20,6 +20,17 @@ enum GameState
 	SCORE_BOARD
 };
 
+
+enum PlayState
+{
+	START,
+	PLAY,
+	PLAYERTURN,
+	END
+
+};
+
+
 class AssignmentApp : public aie::Application {
 public:
 
@@ -50,10 +61,18 @@ public:
 	void drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset);
 
 protected:
-	GameState currentGameState;
+	float const			waitTime = .5f;
+	int					currentPlaying;
+	bool				wait;
 
-	DynamicArray correctOrder;
-	DynamicArray userEntered;
+	time_t				start;
+	time_t				end;
+
+	GameState			currentGameState;
+	PlayState			currentPlayState;
+
+	DynamicArray		correctOrder;
+	DynamicArray		userEntered;
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			splashFont;
@@ -66,11 +85,4 @@ protected:
 	Button*				optionsButton;
 	Button*				mainMenuButton;
 	CircleButton*		simonBtn;
-	CircleButton*		circleOne;
-	CircleButton*		circleTwo;
-	CircleButton*		circleThree;
-	CircleButton*		circleFour;
-
-
-	std::vector<int>	sequence;
 };

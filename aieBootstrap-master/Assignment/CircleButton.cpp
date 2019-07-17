@@ -11,6 +11,7 @@ CircleButton::CircleButton(int number, float x, float y, float r)
 	radius = r;
 
 	hover = false;
+	press = false;
 
 	btnNmber = number;
 }
@@ -31,7 +32,17 @@ void CircleButton::Draw(aie::Renderer2D* renderer)
 	renderer->drawCircle(posX, posY, radius, 0.0f);
 	//renderer->drawBox(posX, posY, width, height);
 	renderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
+}
 
+
+void CircleButton::HoverOn()
+{
+	hover = true;
+}
+
+void CircleButton::HoverOff()
+{
+	hover = false;
 }
 
 bool CircleButton::Update()
@@ -46,7 +57,8 @@ bool CircleButton::Update()
 	{
 		hover = true;
 		//Return whether the mouse button is clicked while colliding
-		return input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT);
+		return input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT);
+		//return input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT);
 	}
 	else {
 

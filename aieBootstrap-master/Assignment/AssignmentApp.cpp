@@ -2,7 +2,9 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
+#include <random>
 #include <iostream>
+#include <time.h>
 
 AssignmentApp::AssignmentApp() {
 
@@ -13,6 +15,8 @@ AssignmentApp::~AssignmentApp() {
 }
 
 bool AssignmentApp::startup() {
+	wait = false;
+
 	float circleRadius = 75.0f;
 	float circleOffSet = circleRadius*1.5;
 	currentGameState = SPLASH_SCREEN;
@@ -123,6 +127,7 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 		quit();
 	}
 	else if (input->isKeyDown(aie::INPUT_KEY_P)) {
+		currentPlayState = START;
 		currentGameState = GAME_PLAY;
 	}
 	else if (input->isKeyDown(aie::INPUT_KEY_O)) {
@@ -132,6 +137,7 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 	if (playButton->Update())
 	{
 		//Replace this with whatever the button should do.
+		currentPlayState = START;
 		currentGameState=GAME_PLAY;
 	}
 	if (exitButton->Update())
@@ -157,7 +163,6 @@ void AssignmentApp::updateOptionsMenu(float deltaTime) {
 	}
 }
 void AssignmentApp::updateGamePlay(float deltaTime) {
-
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 	// exit the application
@@ -165,50 +170,94 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		quit();
 	}
 	else if (input->isKeyDown(aie::INPUT_KEY_G)) {
+		correctOrder.clear();
 		currentGameState = GAME_OVER;
 	}
+	int newSelection = 0;
 	bool update = false;
-	for (size_t i = 0; i < 4; i++)
+
+	switch (currentPlayState)
 	{
-		if (simonBtn[i].Update()) {
-			std::cout << "Button PRessed " << simonBtn[i].getNumber() << std::endl;
-			correctOrder.pushToEnd(simonBtn[i].getNumber());
-			update = true;
-		}
-	}
-	if (update) {
-		std::cout << "New Order" << std::endl;
-		for (int i = 0; i < correctOrder.getCount(); i++)
+	case START:
+		for (int i = 0; i < 4; i++)
 		{
-			std::cout << correctOrder[i] << ":";
+			simonBtn[i].HoverOff();
 		}
+		currentPlaying = 0;		// Resets current playing number
+		userEntered.clear();	// Resets the user enter options.
+		time(&start);
+		newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
+		correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
+		std::cout << std::endl << "Watch" << std::endl;
+		currentPlayState = PLAY;	// Changes play state to PLAY
+		wait = false;
+		break;
+	case PLAY:
+		if (currentPlaying < correctOrder.getCount()){	// Checks to make sure playing in range of lsit
+			time(&end);	// Gets the current time and assigns to end
+			if (wait) {
+				if (difftime(end, start) >= waitTime) {
+					simonBtn[correctOrder[currentPlaying]].HoverOff();
+					currentPlaying++;
+					wait = false;
+					time(&start);
+				}
+			}
+			else {
+				if (difftime(end, start) >= waitTime) {
+					time(&start);
+					wait = true;
+					simonBtn[correctOrder[currentPlaying]].HoverOn();
+					std::cout << correctOrder[currentPlaying] << ":";
+				}
+				break;
+			}
+		}else {
+			std::cout << std::endl << "Correct Pattern is ";
+			for (int i = 0; i < correctOrder.getCount(); i++)
+			{
+				std::cout << correctOrder[i] << ":";
+			}
+			std::cout << std::endl << "Your Turn" << std::endl;
+			currentPlayState = PLAYERTURN;
+		}
+		break;
+	case PLAYERTURN:
+		for (int i = 0; i < 4; i++)
+		{
+			if (simonBtn[i].Update()) {
+				userEntered.pushToEnd(simonBtn[i].getNumber());
+				update = true;
+			}
+		}
+		if (update) {
+			std::cout << std::endl << "User Entered ";
+			for (int i = 0; i < userEntered.getCount(); i++)
+			{
+				std::cout << userEntered[i] << ":";
+			}
+			for (int i = 0; i < userEntered.getCount(); i++)
+			{
+				if (userEntered[i] != correctOrder[i]) {
+					correctOrder.clear();	// Resets the user enter options.
+					currentGameState = GAME_OVER;
+					break;
+				}
+			}
+			if (userEntered.getCount() >= correctOrder.getCount()) {
+				currentPlayState = START;
+				break;
+			}
+		}
+		break;
+	case END:
+		break;
+	default:
+		break;
 	}
 
-
-	/*
-	if (simonBtn[].Update())
-	{
-	}
-	if (circleTwo->Update())
-	{
-		//Replace this with whatever the button should do.
-
-		sequence.push_back(circleTwo->getNumber());
-	}
-	if (circleThree->Update())
-	{
-		//Replace this with whatever the button should do.
-
-		sequence.push_back(circleThree->getNumber());
-	}
-	if (circleFour->Update())
-	{
-		//Replace this with whatever the button should do.
-
-		sequence.push_back(circleFour->getNumber());
-	}
-	*/
 }
+
 void AssignmentApp::updateGameOver(float deltaTime) {
 
 	// input example
@@ -306,17 +355,29 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	drawText(renderer, "Score", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
+	
+	switch (currentPlayState)
+	{
+	case START:
+		drawText(renderer, "Start", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);
+		break;
+	case PLAY:
+		drawText(renderer, "Watch & Listen", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);		
+		break;
+	case PLAYERTURN:
+		drawText(renderer, "Your Turn", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);
+		break;
+	case END:
+		break;
+	default:
+		break;
+	}
 
-	for (size_t i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		simonBtn[i].Draw(renderer);
 	}
-	/*
-	circleOne->Draw(renderer);
-	circleTwo->Draw(renderer);
-	circleThree->Draw(renderer);
-	circleFour->Draw(renderer);
-	*/
+
 }
 
 void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {

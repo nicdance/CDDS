@@ -11,9 +11,11 @@ public:
 
 	// Used to Draw the Button
 	void Draw(aie::Renderer2D* renderer);
-
+	
 	// Check if Button was presed
 	bool Update();
+	void HoverOn();
+	void HoverOff();
 
 	int getNumber();
 
@@ -21,6 +23,7 @@ public:
 
 private:
 	bool hover;
+	bool press;
 
 	//Button's position, width, and height.
 	float posX;
