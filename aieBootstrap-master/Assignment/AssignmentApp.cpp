@@ -8,8 +8,6 @@ AssignmentApp::AssignmentApp() {
 
 }
 
-
-
 AssignmentApp::~AssignmentApp() {
 
 }
@@ -39,14 +37,18 @@ bool AssignmentApp::startup() {
 						getWindowHeight() / 2, mainBackground);
 	}
 
-	circleOne = new CircleButton(1,getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius);
-	circleOne->setColour(1.0f,0.0f,0.0f, 0.2f);
-	circleTwo = new CircleButton(2, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius);
-	circleTwo->setColour(0.0f, 1.0f, 0.0f, 0.2f);
-	circleThree = new CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius);
-	circleThree->setColour(0.0f, 0.0f, 1.0f, 0.2f);
-	circleFour = new CircleButton(4, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius);
-	circleFour->setColour(1.0f, 1.0f, 0.0f, 0.2f);
+	DynamicArray correctOrder = DynamicArray();
+	DynamicArray userEntered = DynamicArray();
+
+	simonBtn = new CircleButton[4];
+	simonBtn[0] = CircleButton(0,getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius);
+	simonBtn[0].setColour(1.0f,0.0f,0.0f, 0.2f);
+	simonBtn[1] = CircleButton(1, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius);
+	simonBtn[1].setColour(0.0f, 1.0f, 0.0f, 0.2f);
+	simonBtn[2] = CircleButton(2, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius);
+	simonBtn[2].setColour(0.0f, 0.0f, 1.0f, 0.2f);
+	simonBtn[3] = CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius);
+	simonBtn[3].setColour(1.0f, 1.0f, 0.0f, 0.2f);
 
 	return true;
 }
@@ -61,11 +63,9 @@ void AssignmentApp::shutdown() {
 	delete exitButton;
 	delete optionsButton;
 	delete mainMenuButton;
-	delete circleOne;
-	delete circleTwo;
-	delete circleThree;
-	delete circleFour;
+
 	delete[] background;
+	delete[] simonBtn;
 }
 
 void AssignmentApp::update(float deltaTime) {
@@ -147,7 +147,6 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 
 }
 
-
 void AssignmentApp::updateOptionsMenu(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -168,11 +167,27 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 	else if (input->isKeyDown(aie::INPUT_KEY_G)) {
 		currentGameState = GAME_OVER;
 	}
-
-	if (circleOne->Update())
+	bool update = false;
+	for (size_t i = 0; i < 4; i++)
 	{
-		//Replace this with whatever the button should do.
-		sequence.push_back(circleOne->getNumber());
+		if (simonBtn[i].Update()) {
+			std::cout << "Button PRessed " << simonBtn[i].getNumber() << std::endl;
+			correctOrder.pushToEnd(simonBtn[i].getNumber());
+			update = true;
+		}
+	}
+	if (update) {
+		std::cout << "New Order" << std::endl;
+		for (int i = 0; i < correctOrder.getCount(); i++)
+		{
+			std::cout << correctOrder[i] << ":";
+		}
+	}
+
+
+	/*
+	if (simonBtn[].Update())
+	{
 	}
 	if (circleTwo->Update())
 	{
@@ -192,6 +207,7 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 
 		sequence.push_back(circleFour->getNumber());
 	}
+	*/
 }
 void AssignmentApp::updateGameOver(float deltaTime) {
 
@@ -291,10 +307,16 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	drawText(renderer, "Score", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 
+	for (size_t i = 0; i < 4; i++)
+	{
+		simonBtn[i].Draw(renderer);
+	}
+	/*
 	circleOne->Draw(renderer);
 	circleTwo->Draw(renderer);
 	circleThree->Draw(renderer);
 	circleFour->Draw(renderer);
+	*/
 }
 
 void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {

@@ -4,6 +4,7 @@
 class CircleButton
 {
 public:
+	CircleButton();
 	CircleButton(int number, float x, float y, float r);
 	~CircleButton();
 

@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "CircleButton.h"
 #include "ScrollingBackground.h"
+#include "DynamicArray.h"
 
 #include <vector> 
 
@@ -51,6 +52,9 @@ public:
 protected:
 	GameState currentGameState;
 
+	DynamicArray correctOrder;
+	DynamicArray userEntered;
+
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			splashFont;
 	aie::Font*			mainFont;
@@ -61,6 +65,7 @@ protected:
 	Button*				exitButton;
 	Button*				optionsButton;
 	Button*				mainMenuButton;
+	CircleButton*		simonBtn;
 	CircleButton*		circleOne;
 	CircleButton*		circleTwo;
 	CircleButton*		circleThree;

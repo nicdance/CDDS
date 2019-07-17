@@ -1,5 +1,8 @@
 #include "CircleButton.h"
 
+
+CircleButton::CircleButton() {
+}
 CircleButton::CircleButton(int number, float x, float y, float r)
 {
 	//Store the button's position, width, and height.
