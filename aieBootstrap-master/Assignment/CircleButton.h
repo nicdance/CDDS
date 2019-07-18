@@ -1,11 +1,13 @@
 #pragma once
 #include "Renderer2D.h"
 #include "Input.h"
+#include "Texture.h"
+
 class CircleButton
 {
 public:
 	CircleButton();
-	CircleButton(int number, float x, float y, float r);
+	CircleButton(int number, float x, float y, float r, aie::Texture *newTexture);
 	~CircleButton();
 
 
@@ -33,5 +35,7 @@ private:
 	float red, blue, green, alpha;
 
 	int btnNmber;
+
+	aie::Texture*		btnImage;
 };
 

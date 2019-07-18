@@ -28,13 +28,22 @@ bool AssignmentApp::startup() {
 	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
 	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
 
-	playButton = new Button("Play Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
-	optionsButton = new Button("Options", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 155.0f, 200.0f, 50.0f);
-	exitButton = new Button("Exit Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 210.0f, 200.0f, 50.0f);
-	mainMenuButton = new Button("Go Back", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
+	optionsBtnTexture = new aie::Texture("../bin/textures/Settings_BTN.png");
+	playBtnTexture = new aie::Texture("../bin/textures/Play_BTN.png");
+	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
+
+	//playButton = new Button("Play Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
+	//optionsButton = new Button("Options", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 155.0f, 200.0f, 50.0f);
+	//exitButton = new Button("Exit Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 210.0f, 200.0f, 50.0f);
+	//mainMenuButton = new Button("Go Back", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
+
+	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 3.0f);
+	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f );
+	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 3.0f);
+	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
 
 	background = new ScrollingBackground[3];
-	mainBackground = new aie::Texture("../bin/textures/cloud.png");
+	mainBackground = new aie::Texture("../bin/textures/BG.png");
 	for (int i = 0; i < 3; i++)
 	{
 		background[i] = ScrollingBackground(mainBackground->getWidth() / 2 + (mainBackground->getWidth()*i), 
@@ -44,14 +53,18 @@ bool AssignmentApp::startup() {
 	DynamicArray correctOrder = DynamicArray();
 	DynamicArray userEntered = DynamicArray();
 
+	circleBtnTexture = new aie::Texture("../bin/textures/Bomb.png");
+	circleOffSet = circleBtnTexture->getWidth();
 	simonBtn = new CircleButton[4];
-	simonBtn[0] = CircleButton(0,getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius);
-	simonBtn[0].setColour(1.0f,0.0f,0.0f, 0.2f);
-	simonBtn[1] = CircleButton(1, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius);
+	
+	simonBtn[0] = CircleButton(0, getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[1] = CircleButton(1, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[2] = CircleButton(2, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[3] = CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
+	
+	simonBtn[0].setColour(1.0f, 0.0f, 0.0f, 0.2f);
 	simonBtn[1].setColour(0.0f, 1.0f, 0.0f, 0.2f);
-	simonBtn[2] = CircleButton(2, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius);
 	simonBtn[2].setColour(0.0f, 0.0f, 1.0f, 0.2f);
-	simonBtn[3] = CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius);
 	simonBtn[3].setColour(1.0f, 1.0f, 0.0f, 0.2f);
 
 	return true;
@@ -63,6 +76,10 @@ void AssignmentApp::shutdown() {
 	delete mainFont;
 	delete headingFont;
 	delete mainBackground;
+	delete circleBtnTexture;
+	delete optionsBtnTexture;
+	delete playBtnTexture;
+	delete exitBtnTexture;
 	delete playButton;
 	delete exitButton;
 	delete optionsButton;
@@ -73,6 +90,11 @@ void AssignmentApp::shutdown() {
 }
 
 void AssignmentApp::update(float deltaTime) {
+	// Move Each background image
+	for (int i = 0; i < 3; i++)
+	{
+		background[i].Move(50, deltaTime, i);
+	}
 
 	switch (currentGameState)
 	{
@@ -111,12 +133,6 @@ void AssignmentApp::updateSplashScreen(float deltaTime){
 		currentGameState = MAIN_MENU;
 	}
 
-	// Move Each background image
-	for (int i = 0; i < 3; i++)
-	{
-		background[i].Move(50, deltaTime, i);
-	}
-
 }
 
 void AssignmentApp::updateMainMenu(float deltaTime) {
@@ -138,7 +154,7 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 	{
 		//Replace this with whatever the button should do.
 		currentPlayState = START;
-		currentGameState=GAME_PLAY;
+		currentGameState= GAME_PLAY;
 	}
 	if (exitButton->Update())
 	{
@@ -188,7 +204,6 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		time(&start);
 		newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
 		correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
-		std::cout << std::endl << "Watch" << std::endl;
 		currentPlayState = PLAY;	// Changes play state to PLAY
 		wait = false;
 		break;
@@ -213,12 +228,10 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 				break;
 			}
 		}else {
-			std::cout << std::endl << "Correct Pattern is ";
 			for (int i = 0; i < correctOrder.getCount(); i++)
 			{
 				std::cout << correctOrder[i] << ":";
 			}
-			std::cout << std::endl << "Your Turn" << std::endl;
 			currentPlayState = PLAYERTURN;
 		}
 		break;
@@ -231,7 +244,6 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 			}
 		}
 		if (update) {
-			std::cout << std::endl << "User Entered ";
 			for (int i = 0; i < userEntered.getCount(); i++)
 			{
 				std::cout << userEntered[i] << ":";
@@ -292,6 +304,13 @@ void AssignmentApp::draw() {
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
+
+	// Draw each background
+	for (int i = 0; i < 3; i++)
+	{
+		background[i].Draw(m_2dRenderer);
+	}
+
 	// draw your stuff here!
 
 	switch (currentGameState)
@@ -331,12 +350,7 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
 }
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
-	
-	// Draw each background
-	for (int i = 0; i < 3; i++)
-	{
-		background[i].Draw(renderer);
-	}
+
 	
 	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
 	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);

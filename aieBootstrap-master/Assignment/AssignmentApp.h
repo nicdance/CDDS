@@ -79,6 +79,10 @@ protected:
 	aie::Font*			mainFont;
 	aie::Font*			headingFont;
 	aie::Texture*		mainBackground;
+	aie::Texture*		circleBtnTexture;
+	aie::Texture*		optionsBtnTexture;
+	aie::Texture*		playBtnTexture;
+	aie::Texture*		exitBtnTexture;
 	ScrollingBackground* background;
 	Button*				playButton;
 	Button*				exitButton;

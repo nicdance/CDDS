@@ -21,9 +21,23 @@ Button::Button(const char* newButtonText, float x, float y, float _width, float 
 }
 
 
+
+Button::Button(aie::Texture *newTexture, float x, float y)
+{
+	//Store the button's position, width, and height.
+	posX = x;
+	posY = y;
+	btnImage = newTexture;
+
+	width = (float)btnImage->getWidth();
+	height = (float)btnImage->getHeight();
+
+	hover = false;
+}
+
+
 Button::~Button()
 {
-	delete currentFont;
 }
 
 void Button::Draw(aie::Renderer2D* renderer)
@@ -35,16 +49,7 @@ void Button::Draw(aie::Renderer2D* renderer)
 	else {
 		renderer->setRenderColour(0.0f, 0.5f, 0.4f, 0.7f);
 	}
-	renderer->drawBox(posX, posY, width, height);
-	renderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//Calculating the centred text position is a bit fiddly.
-	float textWidth = currentFont->getStringWidth(buttonText);
-	float textHeight = currentFont->getStringHeight(buttonText);
-	float centredPosX = posX - (textWidth * 0.5f) + 2;
-	float centredPosY = posY - (textHeight * 0.5f) + 5;
-	//Draw text on the button.
-	renderer->drawText(currentFont, buttonText, centredPosX, centredPosY);
+	renderer->drawSprite(btnImage, posX, posY, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
 }
 
 bool Button::Update()

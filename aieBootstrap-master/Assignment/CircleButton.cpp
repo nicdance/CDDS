@@ -3,7 +3,7 @@
 
 CircleButton::CircleButton() {
 }
-CircleButton::CircleButton(int number, float x, float y, float r)
+CircleButton::CircleButton(int number, float x, float y, float r, aie::Texture *newTexture)
 {
 	//Store the button's position, width, and height.
 	posX = x;
@@ -12,7 +12,7 @@ CircleButton::CircleButton(int number, float x, float y, float r)
 
 	hover = false;
 	press = false;
-
+	btnImage = newTexture;
 	btnNmber = number;
 }
 
@@ -29,7 +29,9 @@ void CircleButton::Draw(aie::Renderer2D* renderer)
 	else {
 		renderer->setRenderColour(red, green, blue, alpha);
 	}
-	renderer->drawCircle(posX, posY, radius, 0.0f);
+
+	renderer->drawSprite(btnImage, posX, posY, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
+	//renderer->drawCircle(posX, posY, radius, 0.0f);
 	//renderer->drawBox(posX, posY, width, height);
 	renderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
 }
