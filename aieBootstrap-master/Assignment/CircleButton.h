@@ -2,12 +2,14 @@
 #include "Renderer2D.h"
 #include "Input.h"
 #include "Texture.h"
+#include <String>
+#include <SFML/Audio.hpp>
 
 class CircleButton
 {
 public:
 	CircleButton();
-	CircleButton(int number, float x, float y, float r, aie::Texture *newTexture);
+	CircleButton(int number, std::string soundFile , float x, float y, float r, aie::Texture *newTexture);
 	~CircleButton();
 
 
@@ -20,6 +22,8 @@ public:
 	void HoverOff();
 
 	int getNumber();
+
+	void CircleButton::PlaySound();
 
 	void setColour(float r, float g, float b, float a);
 
@@ -37,5 +41,7 @@ private:
 	int btnNmber;
 
 	aie::Texture*		btnImage;
+	sf::SoundBuffer		buffer;
+	sf::Sound			sound;
 };
 

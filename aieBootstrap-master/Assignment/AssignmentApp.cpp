@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
+#include <SFML/Audio.hpp>
 #include <random>
 #include <iostream>
 #include <time.h>
@@ -53,19 +54,19 @@ bool AssignmentApp::startup() {
 	DynamicArray correctOrder = DynamicArray();
 	DynamicArray userEntered = DynamicArray();
 
-	circleBtnTexture = new aie::Texture("../bin/textures/Bomb.png");
+	circleBtnTexture = new aie::Texture("../bin/textures/Planet.png");
 	circleOffSet = circleBtnTexture->getWidth();
 	simonBtn = new CircleButton[4];
 	
-	simonBtn[0] = CircleButton(0, getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[1] = CircleButton(1, getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[2] = CircleButton(2, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
-	simonBtn[3] = CircleButton(3, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[0] = CircleButton(0, "../bin/Sound/a.wav", getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[1] = CircleButton(1, "../bin/Sound/c.wav", getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[2] = CircleButton(2, "../bin/Sound/lowE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[3] = CircleButton(3, "../bin/Sound/highE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
 	
-	simonBtn[0].setColour(1.0f, 0.0f, 0.0f, 0.2f);
-	simonBtn[1].setColour(0.0f, 1.0f, 0.0f, 0.2f);
-	simonBtn[2].setColour(0.0f, 0.0f, 1.0f, 0.2f);
-	simonBtn[3].setColour(1.0f, 1.0f, 0.0f, 0.2f);
+	simonBtn[0].setColour(1.0f, 0.0f, 0.0f, 0.2f); // Red
+	simonBtn[1].setColour(1.0f, 1.0f, 0.0f, 0.2f); // Yellow
+	simonBtn[2].setColour(0.03f, 0.03f, 1.0f, 0.2f); // Blue
+	simonBtn[3].setColour(0.0f, 1.0f, 0.0f, 0.2f); // Green
 
 	return true;
 }
@@ -178,6 +179,7 @@ void AssignmentApp::updateOptionsMenu(float deltaTime) {
 		currentGameState = MAIN_MENU;
 	}
 }
+
 void AssignmentApp::updateGamePlay(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -204,10 +206,10 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		time(&start);
 		newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
 		correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
-		currentPlayState = PLAY;	// Changes play state to PLAY
+		currentPlayState = PLAYSEQUENCE;	// Changes play state to PLAYSEQUENCE
 		wait = false;
 		break;
-	case PLAY:
+	case PLAYSEQUENCE:
 		if (currentPlaying < correctOrder.getCount()){	// Checks to make sure playing in range of lsit
 			time(&end);	// Gets the current time and assigns to end
 			if (wait) {
@@ -223,15 +225,11 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 					time(&start);
 					wait = true;
 					simonBtn[correctOrder[currentPlaying]].HoverOn();
-					std::cout << correctOrder[currentPlaying] << ":";
+					simonBtn[correctOrder[currentPlaying]].PlaySound();
 				}
 				break;
 			}
 		}else {
-			for (int i = 0; i < correctOrder.getCount(); i++)
-			{
-				std::cout << correctOrder[i] << ":";
-			}
 			currentPlayState = PLAYERTURN;
 		}
 		break;
@@ -240,15 +238,19 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		{
 			if (simonBtn[i].Update()) {
 				userEntered.pushToEnd(simonBtn[i].getNumber());
+				simonBtn[i].PlaySound();
+
 				update = true;
 			}
 		}
 		if (update) {
-			for (int i = 0; i < userEntered.getCount(); i++)
-			{
-				std::cout << userEntered[i] << ":";
+			if (CheckGameover() == 1) {
+				currentGameState = GAME_OVER;
 			}
-			for (int i = 0; i < userEntered.getCount(); i++)
+			else if (CheckGameover() == 2) {
+				currentPlayState = START;
+			}
+			/*for (int i = 0; i < userEntered.getCount(); i++)
 			{
 				if (userEntered[i] != correctOrder[i]) {
 					correctOrder.clear();	// Resets the user enter options.
@@ -259,7 +261,7 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 			if (userEntered.getCount() >= correctOrder.getCount()) {
 				currentPlayState = START;
 				break;
-			}
+			}*/
 		}
 		break;
 	case END:
@@ -268,6 +270,22 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		break;
 	}
 
+}
+
+
+
+int AssignmentApp::CheckGameover() {
+	for (int i = 0; i < userEntered.getCount(); i++)
+	{
+		if (userEntered[i] != correctOrder[i]) {
+			correctOrder.clear();	// Resets the user enter options.
+			return 1;
+		}
+	}
+	if (userEntered.getCount() >= correctOrder.getCount()) {
+		return 2;
+	}
+	return 0;
 }
 
 void AssignmentApp::updateGameOver(float deltaTime) {
@@ -282,6 +300,7 @@ void AssignmentApp::updateGameOver(float deltaTime) {
 		currentGameState = SCORE_BOARD;
 	}
 }
+
 void AssignmentApp::updateScoreBoard(float deltaTime) {
 
 	// input example
@@ -349,6 +368,7 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 
 	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
 }
+
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
 
 	
@@ -375,7 +395,7 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	case START:
 		drawText(renderer, "Start", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);
 		break;
-	case PLAY:
+	case PLAYSEQUENCE:
 		drawText(renderer, "Watch & Listen", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);		
 		break;
 	case PLAYERTURN:

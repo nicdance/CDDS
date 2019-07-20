@@ -24,7 +24,7 @@ enum GameState
 enum PlayState
 {
 	START,
-	PLAY,
+	PLAYSEQUENCE,
 	PLAYERTURN,
 	END
 
@@ -59,6 +59,8 @@ public:
 	void drawScoreBoard(aie::Renderer2D* renderer);
 
 	void drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset);
+
+	int CheckGameover();
 
 protected:
 	float const			waitTime = .5f;
