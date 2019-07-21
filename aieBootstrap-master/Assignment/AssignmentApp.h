@@ -8,7 +8,10 @@
 #include "ScrollingBackground.h"
 #include "DynamicArray.h"
 
+#include <string>
+#include <cstring>
 #include <vector> 
+#include <iostream>
 
 enum GameState
 {
@@ -66,8 +69,10 @@ public:
 protected:
 	float const			waitTime = .5f;
 	int					currentPlaying;
+	int					correctAnswers = 0;
 	bool				wait;
 	bool				first = true;
+	//std::string			scoreText;
 
 	time_t				start;
 	time_t				end;

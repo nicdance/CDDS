@@ -256,7 +256,7 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 				currentGameState = GAME_OVER;
 			}
 			else if (CheckGameover() == 2) {
-
+				correctAnswers = userEntered.getCount();
 				first = true;
 				time(&start);
 				currentPlayState = START;
@@ -402,7 +402,14 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 }
 
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
-	drawText(renderer, "Score", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
+	
+	std::string scoreText =  "Score " + std::to_string(correctAnswers);
+	char cString[10];
+	strcpy(cString, scoreText.c_str());
+	std::cout << cString << std::endl;
+
+
+	drawText(renderer, cString, mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 	
 	switch (currentPlayState)
@@ -436,6 +443,14 @@ void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {
 }
 
 void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
+
+	std::string scoreText = "Score " + std::to_string(correctAnswers);
+	char cString[10];
+	strcpy(cString, scoreText.c_str());
+	std::cout << cString << std::endl;
+
+
+	drawText(renderer, cString, mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Game Over", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
 	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 }
