@@ -61,11 +61,13 @@ public:
 	void drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset);
 
 	int CheckGameover();
+	void PlayWrongAnswerSound();
 
 protected:
 	float const			waitTime = .5f;
 	int					currentPlaying;
 	bool				wait;
+	bool				first = true;
 
 	time_t				start;
 	time_t				end;
@@ -75,6 +77,10 @@ protected:
 
 	DynamicArray		correctOrder;
 	DynamicArray		userEntered;
+
+
+	sf::SoundBuffer		buffer;
+	sf::Sound			sound;
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			splashFont;

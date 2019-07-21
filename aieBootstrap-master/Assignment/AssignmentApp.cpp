@@ -33,15 +33,10 @@ bool AssignmentApp::startup() {
 	playBtnTexture = new aie::Texture("../bin/textures/Play_BTN.png");
 	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
 
-	//playButton = new Button("Play Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
-	//optionsButton = new Button("Options", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 155.0f, 200.0f, 50.0f);
-	//exitButton = new Button("Exit Game", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 210.0f, 200.0f, 50.0f);
-	//mainMenuButton = new Button("Go Back", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - 100.0f, 200.0f, 50.0f);
-
-	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 3.0f);
-	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f );
-	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 3.0f);
-	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 3.0f);
+	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
+	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f );
+	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
+	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 
 	background = new ScrollingBackground[3];
 	mainBackground = new aie::Texture("../bin/textures/BG.png");
@@ -67,6 +62,9 @@ bool AssignmentApp::startup() {
 	simonBtn[1].setColour(1.0f, 1.0f, 0.0f, 0.2f); // Yellow
 	simonBtn[2].setColour(0.03f, 0.03f, 1.0f, 0.2f); // Blue
 	simonBtn[3].setColour(0.0f, 1.0f, 0.0f, 0.2f); // Green
+
+
+	buffer.loadFromFile("../bin/Sound/wrong.wav");
 
 	return true;
 }
@@ -153,6 +151,7 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 	
 	if (playButton->Update())
 	{
+		time(&start);
 		//Replace this with whatever the button should do.
 		currentPlayState = START;
 		currentGameState= GAME_PLAY;
@@ -203,10 +202,18 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		}
 		currentPlaying = 0;		// Resets current playing number
 		userEntered.clear();	// Resets the user enter options.
-		time(&start);
-		newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
-		correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
-		currentPlayState = PLAYSEQUENCE;	// Changes play state to PLAYSEQUENCE
+		time(&end);
+		if (first) {
+			if (difftime(end, start) >= waitTime) {
+				first = false;
+			}
+		}
+		else {
+			time(&start);
+			newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
+			correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
+			currentPlayState = PLAYSEQUENCE;	// Changes play state to PLAYSEQUENCE
+		}
 		wait = false;
 		break;
 	case PLAYSEQUENCE:
@@ -245,9 +252,13 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		}
 		if (update) {
 			if (CheckGameover() == 1) {
+				PlayWrongAnswerSound();
 				currentGameState = GAME_OVER;
 			}
 			else if (CheckGameover() == 2) {
+
+				first = true;
+				time(&start);
 				currentPlayState = START;
 			}
 			/*for (int i = 0; i < userEntered.getCount(); i++)
@@ -272,8 +283,6 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 
 }
 
-
-
 int AssignmentApp::CheckGameover() {
 	for (int i = 0; i < userEntered.getCount(); i++)
 	{
@@ -286,6 +295,12 @@ int AssignmentApp::CheckGameover() {
 		return 2;
 	}
 	return 0;
+}
+
+
+void AssignmentApp::PlayWrongAnswerSound() {
+	sound.setBuffer(buffer);
+	sound.play();
 }
 
 void AssignmentApp::updateGameOver(float deltaTime) {
