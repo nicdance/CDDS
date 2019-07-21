@@ -112,9 +112,9 @@ void AssignmentApp::update(float deltaTime) {
 	case GAME_OVER:
 		updateGameOver(deltaTime);
 		break;
-	case SCORE_BOARD:
-		updateScoreBoard(deltaTime);
-		break;
+	//case SCORE_BOARD:
+	//	updateScoreBoard(deltaTime);
+	//	break;
 	default:
 		break;
 	}
