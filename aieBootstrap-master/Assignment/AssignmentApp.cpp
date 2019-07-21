@@ -19,7 +19,7 @@ bool AssignmentApp::startup() {
 	wait = false;
 
 	float circleRadius = 75.0f;
-	float circleOffSet = circleRadius*1.5;
+	float circleOffSet = (float)circleRadius*1.5;
 	currentGameState = SPLASH_SCREEN;
 	m_2dRenderer = new aie::Renderer2D();
 
@@ -34,8 +34,8 @@ bool AssignmentApp::startup() {
 	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
 
 	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
-	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f );
-	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
+	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f );
+	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
 	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 
 	background = new ScrollingBackground[3];
@@ -245,9 +245,9 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		{
 			if (simonBtn[i].Update()) {
 				userEntered.pushToEnd(simonBtn[i].getNumber());
-				simonBtn[i].PlaySound();
-
-				update = true;
+				newSelection = i;
+				update = true; 
+				i = 4;
 			}
 		}
 		if (update) {
@@ -256,23 +256,16 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 				currentGameState = GAME_OVER;
 			}
 			else if (CheckGameover() == 2) {
+				simonBtn[newSelection].PlaySound();
 				correctAnswers = userEntered.getCount();
 				first = true;
 				time(&start);
 				currentPlayState = START;
 			}
-			/*for (int i = 0; i < userEntered.getCount(); i++)
-			{
-				if (userEntered[i] != correctOrder[i]) {
-					correctOrder.clear();	// Resets the user enter options.
-					currentGameState = GAME_OVER;
-					break;
-				}
+			else {
+				simonBtn[newSelection].PlaySound();
+				correctAnswers = userEntered.getCount();
 			}
-			if (userEntered.getCount() >= correctOrder.getCount()) {
-				currentPlayState = START;
-				break;
-			}*/
 		}
 		break;
 	case END:
@@ -297,7 +290,6 @@ int AssignmentApp::CheckGameover() {
 	return 0;
 }
 
-
 void AssignmentApp::PlayWrongAnswerSound() {
 	sound.setBuffer(buffer);
 	sound.play();
@@ -311,8 +303,10 @@ void AssignmentApp::updateGameOver(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
 		quit();
 	}
-	else if (input->isKeyDown(aie::INPUT_KEY_S)) {
-		currentGameState = SCORE_BOARD;
+	if (mainMenuButton->Update())
+	{
+		//Replace this with whatever the button should do.
+		currentGameState = MAIN_MENU;
 	}
 }
 
@@ -406,8 +400,6 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	std::string scoreText =  "Score " + std::to_string(correctAnswers);
 	char cString[10];
 	strcpy(cString, scoreText.c_str());
-	std::cout << cString << std::endl;
-
 
 	drawText(renderer, cString, mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
@@ -447,12 +439,11 @@ void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
 	std::string scoreText = "Score " + std::to_string(correctAnswers);
 	char cString[10];
 	strcpy(cString, scoreText.c_str());
-	std::cout << cString << std::endl;
-
 
 	drawText(renderer, cString, mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
 	drawText(renderer, "Game Over", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
-	drawText(renderer, "Press S", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
+
+	mainMenuButton->Draw(renderer);
 }
 
 void AssignmentApp::drawScoreBoard(aie::Renderer2D* renderer) {
