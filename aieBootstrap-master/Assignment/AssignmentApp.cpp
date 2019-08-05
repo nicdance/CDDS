@@ -257,14 +257,16 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 			}
 			else if (CheckGameover() == 2) {
 				simonBtn[newSelection].PlaySound();
-				correctAnswers = userEntered.getCount();
+				//correctAnswers = userEntered.getCount();
+				updateScore = true;
 				first = true;
 				time(&start);
 				currentPlayState = START;
 			}
 			else {
 				simonBtn[newSelection].PlaySound();
-				correctAnswers = userEntered.getCount();
+				//updateScore = true;
+				//correctAnswers = userEntered.getCount();
 			}
 		}
 		break;
@@ -396,7 +398,10 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 }
 
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
-	
+	if (updateScore == true) {
+		correctAnswers = userEntered.getCount();
+		updateScore = false;
+	}
 	std::string scoreText =  "Score " + std::to_string(correctAnswers);
 	char cString[10];
 	strcpy(cString, scoreText.c_str());

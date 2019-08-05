@@ -70,6 +70,7 @@ protected:
 	float const			waitTime = .5f;
 	int					currentPlaying;
 	int					correctAnswers = 0;
+	bool				updateScore = false;
 	bool				wait;
 	bool				first = true;
 	//std::string			scoreText;
