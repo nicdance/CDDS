@@ -3,7 +3,9 @@
 #include "Renderer2D.h"
 #include "Application.h"
 
-
+/*
+*	This class controlls the scrolling background
+*/
 struct Position {
 	float x;
 	float y;

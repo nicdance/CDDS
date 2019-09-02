@@ -36,8 +36,6 @@ DynamicArray& DynamicArray::operator=(const DynamicArray& other) {
 }
 // Copy Constructor
 DynamicArray::DynamicArray(const DynamicArray& other) : DynamicArray(other.count) {
-	//totalMemoryAllocated = other.count;
-	//alocatedSpace = new int[totalMemoryAllocated];
 	for (int i = 0; i < totalMemoryAllocated; i++) {
 		alocatedSpace[i] = other.alocatedSpace[i];
 	}

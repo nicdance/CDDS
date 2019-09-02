@@ -1,6 +1,8 @@
 #pragma once
 #include "assert.h"
 
+#include "MemoryLeakTester.h"
+
 class DynamicArray
 {
 	private:

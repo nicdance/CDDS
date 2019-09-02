@@ -4,7 +4,7 @@ ScrollingBackground::ScrollingBackground()
 {
 }
 
-
+//	construction
 ScrollingBackground::ScrollingBackground(float x, float y, aie::Texture *newTexture) {
 	position = {x,y, (float)newTexture ->getWidth(), x };
 	texture = newTexture;

@@ -16,6 +16,7 @@ CircleButton::CircleButton(int number, std::string soundFile , float x, float y,
 	btnNmber = number;
 
 	buffer.loadFromFile(soundFile);
+	sound.setVolume(50);
 }
 
 CircleButton::~CircleButton()
@@ -27,8 +28,10 @@ void CircleButton::PlaySound() {
 	sound.play();
 }
 
-void CircleButton::Draw(aie::Renderer2D* renderer)
+void CircleButton::Draw(aie::Renderer2D* renderer, float xPos, float yPos)
 {
+	posX = xPos;
+	posY = yPos;
 	//Draw a coloured box for the button background.
 	if (hover == true) {
 		renderer->setRenderColour(red,green,blue,1.0f);
@@ -67,7 +70,6 @@ bool CircleButton::Update()
 
 		//Return whether the mouse button is clicked while colliding
 		return input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT);
-		//return input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT);
 	}
 	else {
 

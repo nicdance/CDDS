@@ -17,9 +17,7 @@ AssignmentApp::~AssignmentApp() {
 
 bool AssignmentApp::startup() {
 	wait = false;
-
-	float circleRadius = 75.0f;
-	float circleOffSet = (float)circleRadius*1.5;
+	
 	currentGameState = SPLASH_SCREEN;
 	m_2dRenderer = new aie::Renderer2D();
 
@@ -29,6 +27,9 @@ bool AssignmentApp::startup() {
 	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
 	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
 
+
+	// This section sets up all the basic elements for the game
+	// including buttons textures sounds etc
 	optionsBtnTexture = new aie::Texture("../bin/textures/Settings_BTN.png");
 	playBtnTexture = new aie::Texture("../bin/textures/Play_BTN.png");
 	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
@@ -63,6 +64,8 @@ bool AssignmentApp::startup() {
 	simonBtn[2].setColour(0.03f, 0.03f, 1.0f, 0.2f); // Blue
 	simonBtn[3].setColour(0.0f, 1.0f, 0.0f, 0.2f); // Green
 
+	//srand(time(nullptr));
+	srand(((unsigned int)(time(nullptr))));
 
 	buffer.loadFromFile("../bin/Sound/wrong.wav");
 
@@ -88,6 +91,8 @@ void AssignmentApp::shutdown() {
 	delete[] simonBtn;
 }
 
+
+//	Updates the scroling background and  executes relevant state.
 void AssignmentApp::update(float deltaTime) {
 	// Move Each background image
 	for (int i = 0; i < 3; i++)
@@ -106,9 +111,9 @@ void AssignmentApp::update(float deltaTime) {
 	case GAME_PLAY:
 		updateGamePlay(deltaTime);
 		break;
-	case OPTIONS_MENU:
-		updateOptionsMenu(deltaTime);
-		break;
+	//case OPTIONS_MENU:
+	//	updateOptionsMenu(deltaTime);
+	//	break;
 	case GAME_OVER:
 		updateGameOver(deltaTime);
 		break;
@@ -120,6 +125,7 @@ void AssignmentApp::update(float deltaTime) {
 	}
 }
 
+// update function for the splash screen state
 void AssignmentApp::updateSplashScreen(float deltaTime){
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -134,82 +140,72 @@ void AssignmentApp::updateSplashScreen(float deltaTime){
 
 }
 
+// update functionfor the main menu state
 void AssignmentApp::updateMainMenu(float deltaTime) {
-	// input example
+	
 	aie::Input* input = aie::Input::getInstance();
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
 		quit();
 	}
-	else if (input->isKeyDown(aie::INPUT_KEY_P)) {
-		currentPlayState = START;
-		currentGameState = GAME_PLAY;
-	}
-	else if (input->isKeyDown(aie::INPUT_KEY_O)) {
-		currentGameState = OPTIONS_MENU;
-	}
 	
+	// Detect if buttons are pressed and performs relevat action
 	if (playButton->Update())
 	{
-		time(&start);
-		//Replace this with whatever the button should do.
+		startClock = std::clock();
 		currentPlayState = START;
 		currentGameState= GAME_PLAY;
 	}
 	if (exitButton->Update())
 	{
-		//Replace this with whatever the button should do.
 		quit();
 	}
-	if (optionsButton->Update())
+	/*if (optionsButton->Update())
 	{
-		//Replace this with whatever the button should do.
 		currentGameState = OPTIONS_MENU;
-	}
+	}*/
 
 }
 
+// update function for the OPtions menu. This may not get implemented depending on time.
 void AssignmentApp::updateOptionsMenu(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 	if (mainMenuButton->Update())
 	{
-		//Replace this with whatever the button should do.
 		currentGameState = MAIN_MENU;
 	}
 }
 
+
+// update function for the Gameplay state
 void AssignmentApp::updateGamePlay(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
-	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
-		quit();
-	}
-	else if (input->isKeyDown(aie::INPUT_KEY_G)) {
-		correctOrder.clear();
-		currentGameState = GAME_OVER;
-	}
 	int newSelection = 0;
 	bool update = false;
 
+	// checks to see which play state the game is in.
 	switch (currentPlayState)
 	{
 	case START:
+		// Sets all button to HoverOff
 		for (int i = 0; i < 4; i++)
 		{
 			simonBtn[i].HoverOff();
 		}
 		currentPlaying = 0;		// Resets current playing number
 		userEntered.clear();	// Resets the user enter options.
-		time(&end);
+		
+		endClock = std::clock();
+		
 		if (first) {
-			if (difftime(end, start) >= waitTime) {
+			if (endClock - startClock >= startTime) {
 				first = false;
 			}
 		}
 		else {
-			time(&start);
+			startClock = std::clock();
 			newSelection = rand() % (4);	// Randomly selects a number to be between 0-3 
 			correctOrder.pushToEnd(newSelection);	// Pushes selection onto dynamic array
 			currentPlayState = PLAYSEQUENCE;	// Changes play state to PLAYSEQUENCE
@@ -217,19 +213,19 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		wait = false;
 		break;
 	case PLAYSEQUENCE:
-		if (currentPlaying < correctOrder.getCount()){	// Checks to make sure playing in range of lsit
-			time(&end);	// Gets the current time and assigns to end
+		if (currentPlaying < correctOrder.getCount()){	// Checks to make sure playing in range of list
+			endClock = std::clock(); // Gets the current time in ms and assigns to end
 			if (wait) {
-				if (difftime(end, start) >= waitTime) {
+				if (endClock - startClock >= waitTime) {
 					simonBtn[correctOrder[currentPlaying]].HoverOff();
 					currentPlaying++;
 					wait = false;
-					time(&start);
+					startClock = std::clock();
 				}
 			}
 			else {
-				if (difftime(end, start) >= waitTime) {
-					time(&start);
+				if (endClock - startClock >= waitTime) {
+					startClock = std::clock();
 					wait = true;
 					simonBtn[correctOrder[currentPlaying]].HoverOn();
 					simonBtn[correctOrder[currentPlaying]].PlaySound();
@@ -252,12 +248,14 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 		}
 		if (update) {
 			if (CheckGameover() == 1) {
+				correctOrder.clear();
+				userEntered.clear();
+				updateScore = true;
 				PlayWrongAnswerSound();
 				currentGameState = GAME_OVER;
 			}
 			else if (CheckGameover() == 2) {
 				simonBtn[newSelection].PlaySound();
-				//correctAnswers = userEntered.getCount();
 				updateScore = true;
 				first = true;
 				time(&start);
@@ -265,8 +263,6 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 			}
 			else {
 				simonBtn[newSelection].PlaySound();
-				//updateScore = true;
-				//correctAnswers = userEntered.getCount();
 			}
 		}
 		break;
@@ -278,6 +274,7 @@ void AssignmentApp::updateGamePlay(float deltaTime) {
 
 }
 
+// Function to check if the user has selected an incorrect answer.
 int AssignmentApp::CheckGameover() {
 	for (int i = 0; i < userEntered.getCount(); i++)
 	{
@@ -292,19 +289,20 @@ int AssignmentApp::CheckGameover() {
 	return 0;
 }
 
+
+// plasy the buzzer if a wrong number is pressed
 void AssignmentApp::PlayWrongAnswerSound() {
 	sound.setBuffer(buffer);
+
+	sound.setVolume(25);
 	sound.play();
 }
 
+//	update function for the main menu
 void AssignmentApp::updateGameOver(float deltaTime) {
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
-	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
-		quit();
-	}
 	if (mainMenuButton->Update())
 	{
 		//Replace this with whatever the button should do.
@@ -393,7 +391,7 @@ void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 	drawText(renderer, "Main Menu", headingFont, getWindowWidth() / 2.0f, getWindowHeight() *.75f);
 
 	playButton->Draw(renderer);
-	optionsButton->Draw(renderer);
+	//optionsButton->Draw(renderer);
 	exitButton->Draw(renderer);
 }
 
@@ -407,7 +405,6 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	strcpy(cString, scoreText.c_str());
 
 	drawText(renderer, cString, mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.9f);
-	drawText(renderer, "Press G", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 	
 	switch (currentPlayState)
 	{
@@ -426,10 +423,13 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 		break;
 	}
 
-	for (int i = 0; i < 4; i++)
-	{
-		simonBtn[i].Draw(renderer);
-	}
+
+	// Draws the circles.
+	// This function wil update there position if the screen has resized.
+	simonBtn[0].Draw(renderer, getWindowWidth() / 2.0f + circleOffSet, getWindowHeight() / 2.0f);
+	simonBtn[1].Draw(renderer, getWindowWidth() / 2.0f - circleOffSet, getWindowHeight() / 2.0f);
+	simonBtn[2].Draw(renderer, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f + circleOffSet);
+	simonBtn[3].Draw(renderer, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f - circleOffSet);
 
 }
 

@@ -8,11 +8,16 @@
 #include "ScrollingBackground.h"
 #include "DynamicArray.h"
 
+#include <chrono>
+
+
 #include <string>
 #include <cstring>
 #include <vector> 
 #include <iostream>
 
+
+//	GameState used to detect the change in state
 enum GameState
 {
 	SPLASH_SCREEN,
@@ -23,14 +28,13 @@ enum GameState
 	SCORE_BOARD
 };
 
-
+//	PlayState used to reflect the change in game play states
 enum PlayState
 {
 	START,
 	PLAYSEQUENCE,
 	PLAYERTURN,
 	END
-
 };
 
 
@@ -67,16 +71,26 @@ public:
 	void PlayWrongAnswerSound();
 
 protected:
-	float const			waitTime = .5f;
+	float const			waitTime =	800.0f;
+	float const			startTime = 1200.0f;
 	int					currentPlaying;
 	int					correctAnswers = 0;
 	bool				updateScore = false;
 	bool				wait;
 	bool				first = true;
+	
+	float circleRadius = 75.0f;
+	float circleOffSet = (float)circleRadius*1.5;
+
 	//std::string			scoreText;
 
 	time_t				start;
 	time_t				end;
+
+	std::clock_t startClock;
+	std::clock_t endClock;
+
+
 
 	GameState			currentGameState;
 	PlayState			currentPlayState;

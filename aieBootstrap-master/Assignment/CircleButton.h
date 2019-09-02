@@ -14,7 +14,7 @@ public:
 
 
 	// Used to Draw the Button
-	void Draw(aie::Renderer2D* renderer);
+	void Draw(aie::Renderer2D* renderer, float xPos, float yPos);
 	
 	// Check if Button was presed
 	bool Update();
@@ -27,7 +27,7 @@ public:
 
 	void setColour(float r, float g, float b, float a);
 
-private:
+protected:
 	bool hover;
 	bool press;
 
