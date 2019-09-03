@@ -22,10 +22,8 @@ enum GameState
 {
 	SPLASH_SCREEN,
 	MAIN_MENU,
-	OPTIONS_MENU,
 	GAME_PLAY,
 	GAME_OVER,
-	SCORE_BOARD
 };
 
 //	PlayState used to reflect the change in game play states
@@ -37,7 +35,9 @@ enum PlayState
 	END
 };
 
-
+/*
+*	This class will manage all updates and draws for all states
+*/
 class AssignmentApp : public aie::Application {
 public:
 
@@ -52,18 +52,14 @@ public:
 	void updateSplashScreen(float deltaTime);
 	void updateMainMenu(float deltaTime);
 	void updateGamePlay(float deltaTime);
-	void updateOptionsMenu(float deltaTime);
 	void updateGameOver(float deltaTime);
-	void updateScoreBoard(float deltaTime);
 
 	// draw Functions. The individual state Draw functions are called on Draw
 	virtual void draw();
 	void drawSplashScreen(aie::Renderer2D* renderer);
 	void drawMainMenu(aie::Renderer2D* renderer);
 	void drawGamePlay(aie::Renderer2D* renderer);
-	void drawOptionsMenu(aie::Renderer2D* renderer);
 	void drawGameOver(aie::Renderer2D* renderer);
-	void drawScoreBoard(aie::Renderer2D* renderer);
 
 	void drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset);
 
@@ -71,13 +67,13 @@ public:
 	void PlayWrongAnswerSound();
 
 protected:
-	float const			waitTime =	500.0f;
-	float const			startTime = 1600.0f;
-	int					currentPlaying;
+	float const			waitTime =	500.0f;		// the wait time between colors played back in ms
+	float const			startTime = 1600.0f;	// the time in ms that there is a pause on starting a new round
+	int					currentPlaying;			// 
 	int					correctAnswers = 0;
-	bool				updateScore = false;
+	bool				updateScore = false;	// Used to indicate is a score needs to be refreshed
 	bool				wait;
-	bool				first = true;
+	bool				first = true;			// determins if it is the first start sequence of the game
 	
 	float circleRadius = 75.0f;
 	float circleOffSet = (float)circleRadius*1.5;
@@ -89,8 +85,6 @@ protected:
 
 	std::clock_t startClock;
 	std::clock_t endClock;
-
-
 
 	GameState			currentGameState;
 	PlayState			currentPlayState;
@@ -108,13 +102,11 @@ protected:
 	aie::Font*			headingFont;
 	aie::Texture*		mainBackground;
 	aie::Texture*		circleBtnTexture;
-	aie::Texture*		optionsBtnTexture;
 	aie::Texture*		playBtnTexture;
 	aie::Texture*		exitBtnTexture;
 	ScrollingBackground* background;
 	Button*				playButton;
 	Button*				exitButton;
-	Button*				optionsButton;
 	Button*				mainMenuButton;
 	CircleButton*		simonBtn;
 };

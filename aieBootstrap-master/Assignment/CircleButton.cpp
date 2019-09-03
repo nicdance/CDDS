@@ -3,6 +3,7 @@
 
 CircleButton::CircleButton() {
 }
+
 CircleButton::CircleButton(int number, std::string soundFile , float x, float y, float r, aie::Texture *newTexture)
 {
 	//Store the button's position, width, and height.
@@ -22,12 +23,15 @@ CircleButton::CircleButton(int number, std::string soundFile , float x, float y,
 CircleButton::~CircleButton()
 {
 }
+
+// plays the sound
 void CircleButton::PlaySound() {
 
 	sound.setBuffer(buffer);
 	sound.play();
 }
 
+// draws thecircle sprite and alters the colour based on if the mouse is hovering over it or not.
 void CircleButton::Draw(aie::Renderer2D* renderer, float xPos, float yPos)
 {
 	posX = xPos;
@@ -56,6 +60,8 @@ void CircleButton::HoverOff()
 	hover = false;
 }
 
+// checks if the mouse is withing the bounds of the circle button
+// it then returns true if the mouse is within the bounds and pressed.
 bool CircleButton::Update()
 {
 	aie::Input* input = aie::Input::getInstance();

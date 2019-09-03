@@ -5,23 +5,6 @@ Button::Button()
 {
 }
 
-Button::Button(const char* newButtonText, float x, float y, float _width, float _height)
-{
-	//Store the text that will appear on the button.
-	strcpy_s(buttonText, 64, newButtonText);
-	//Load a font to use to display the text.
-	currentFont = new aie::Font("../bin/font/consolas.ttf", 32);
-	//Store the button's position, width, and height.
-	posX = x;
-	posY = y;
-	width = _width;
-	height = _height;
-
-	hover = false;
-}
-
-
-
 Button::Button(aie::Texture *newTexture, float x, float y)
 {
 	//Store the button's position, width, and height.
@@ -42,7 +25,8 @@ Button::~Button()
 
 void Button::Draw(aie::Renderer2D* renderer)
 {
-	//Draw a coloured box for the button background.
+	//	Draw a coloured box for the button background.
+	//	The colour is different depending on if the mouse is hovering or not
 	if (hover == true) {
 		renderer->setRenderColour(1.0f, 0.5f, 0.4f, 1.0f);
 	}
@@ -52,6 +36,8 @@ void Button::Draw(aie::Renderer2D* renderer)
 	renderer->drawSprite(btnImage, posX, posY, 0.0f, 0.0f, 0.0f, 0.0f, .5f, .5f);
 }
 
+
+// determines if the house is with in the bounds of the button and returns if the mouse was pressed or not.
 bool Button::Update()
 {
 	aie::Input* input = aie::Input::getInstance();

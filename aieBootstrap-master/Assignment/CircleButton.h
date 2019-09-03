@@ -5,6 +5,9 @@
 #include <String>
 #include <SFML/Audio.hpp>
 
+/*
+*	class for the circle game buttons.
+*/
 class CircleButton
 {
 public:

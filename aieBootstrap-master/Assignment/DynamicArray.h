@@ -3,6 +3,9 @@
 
 #include "MemoryLeakTester.h"
 
+/*
+*	Dynamic array class for  storing the sequence options.
+*/
 class DynamicArray
 {
 	private:

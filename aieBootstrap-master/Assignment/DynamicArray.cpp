@@ -1,4 +1,5 @@
 #include "DynamicArray.h"
+
 //Initialising
 // Constructors
 DynamicArray::DynamicArray():DynamicArray(1) //Sets up a default size
@@ -44,7 +45,7 @@ DynamicArray::DynamicArray(const DynamicArray& other) : DynamicArray(other.count
 // [] operator overrides
 int& DynamicArray::operator[](int index) {
 	if ((index + 1) > totalMemoryAllocated) {
-		reserveExtra(5);			// need to decide if only 1 extra space is allocated or 5? 10? more?
+		reserveExtra(5);			
 	}
 	if (index + 1 > count) {
 		count = index + 1;
@@ -151,3 +152,5 @@ int DynamicArray::getCount() {
 int DynamicArray::getCapacity() {
 	return totalMemoryAllocated;
 }
+
+

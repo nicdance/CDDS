@@ -3,11 +3,14 @@
 #include "Font.h"
 #include "Input.h"
 #include "Texture.h"
+/*
+*	Contains details for the rectangle buttons in game
+*/
+
 class Button
 {
 public:
 	Button();
-	Button(const char* newButtonText, float x, float y, float _width, float _height);
 	Button(aie::Texture *newTexture, float x, float y);
 	~Button();
 
@@ -19,9 +22,6 @@ public:
 
 protected:
 	bool hover;
-	//Font and text for the button.
-	aie::Font* currentFont;
-	char buttonText[64];
 
 	aie::Texture*		btnImage;
 	

@@ -23,24 +23,22 @@ bool AssignmentApp::startup() {
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
-	splashFont = new aie::Font("./bin/font/pricedown_bl.ttf", 300);
-	mainFont = new aie::Font("./bin/font/consolas.ttf", 32);
-	headingFont = new aie::Font("./bin/font/pricedown_bl.ttf", 150);
+	splashFont = new aie::Font("../bin/font/pricedown_bl.ttf", 300);
+	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
+	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
 
 
 	// This section sets up all the basic elements for the game
 	// including buttons textures sounds etc
-	optionsBtnTexture = new aie::Texture("./bin/textures/Settings_BTN.png");
-	playBtnTexture = new aie::Texture("./bin/textures/Play_BTN.png");
-	exitBtnTexture = new aie::Texture("./bin/textures/Close_BTN.png");
+	playBtnTexture = new aie::Texture("../bin/textures/Play_BTN.png");
+	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
 
 	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
-	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f );
 	exitButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f + playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
 	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 
 	background = new ScrollingBackground[3];
-	mainBackground = new aie::Texture("./bin/textures/BG.png");
+	mainBackground = new aie::Texture("../bin/textures/BG.png");
 	for (int i = 0; i < 3; i++)
 	{
 		background[i] = ScrollingBackground(mainBackground->getWidth() / 2 + (mainBackground->getWidth()*i), 
@@ -50,14 +48,14 @@ bool AssignmentApp::startup() {
 	DynamicArray correctOrder = DynamicArray();
 	DynamicArray userEntered = DynamicArray();
 
-	circleBtnTexture = new aie::Texture("./bin/textures/Planet.png");
+	circleBtnTexture = new aie::Texture("../bin/textures/Planet.png");
 	circleOffSet = circleBtnTexture->getWidth();
 	simonBtn = new CircleButton[4];
 	
-	simonBtn[0] = CircleButton(0, "./bin/Sound/a.wav", getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[1] = CircleButton(1, "./bin/Sound/c.wav", getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[2] = CircleButton(2, "./bin/Sound/lowE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
-	simonBtn[3] = CircleButton(3, "./bin/Sound/highE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[0] = CircleButton(0, "../bin/Sound/a.wav", getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[1] = CircleButton(1, "../bin/Sound/c.wav", getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[2] = CircleButton(2, "../bin/Sound/lowE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[3] = CircleButton(3, "../bin/Sound/highE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
 	
 	simonBtn[0].setColour(1.0f, 0.0f, 0.0f, 0.2f); // Red
 	simonBtn[1].setColour(1.0f, 1.0f, 0.0f, 0.2f); // Yellow
@@ -67,28 +65,27 @@ bool AssignmentApp::startup() {
 	//srand(time(nullptr));
 	srand(((unsigned int)(time(nullptr))));
 
-	buffer.loadFromFile("./bin/Sound/wrong.wav");
+	buffer.loadFromFile("../bin/Sound/wrong.wav");
 
 	return true;
 }
 
 void AssignmentApp::shutdown() {
+	delete playButton;
+	delete exitButton;
+	delete mainMenuButton;
+
+	delete[] background;
+	delete[] simonBtn;
+	
 	delete m_2dRenderer;
 	delete splashFont;
 	delete mainFont;
 	delete headingFont;
 	delete mainBackground;
 	delete circleBtnTexture;
-	delete optionsBtnTexture;
 	delete playBtnTexture;
 	delete exitBtnTexture;
-	delete playButton;
-	delete exitButton;
-	delete optionsButton;
-	delete mainMenuButton;
-
-	delete[] background;
-	delete[] simonBtn;
 }
 
 
@@ -111,15 +108,9 @@ void AssignmentApp::update(float deltaTime) {
 	case GAME_PLAY:
 		updateGamePlay(deltaTime);
 		break;
-	//case OPTIONS_MENU:
-	//	updateOptionsMenu(deltaTime);
-	//	break;
 	case GAME_OVER:
 		updateGameOver(deltaTime);
 		break;
-	//case SCORE_BOARD:
-	//	updateScoreBoard(deltaTime);
-	//	break;
 	default:
 		break;
 	}
@@ -163,17 +154,6 @@ void AssignmentApp::updateMainMenu(float deltaTime) {
 	}*/
 
 }
-
-// update function for the OPtions menu. This may not get implemented depending on time.
-void AssignmentApp::updateOptionsMenu(float deltaTime) {
-	// input example
-	aie::Input* input = aie::Input::getInstance();
-	if (mainMenuButton->Update())
-	{
-		currentGameState = MAIN_MENU;
-	}
-}
-
 
 // update function for the Gameplay state
 void AssignmentApp::updateGamePlay(float deltaTime) {
@@ -286,7 +266,6 @@ int AssignmentApp::CheckGameover() {
 	return 0;
 }
 
-
 // plasy the buzzer if a wrong number is pressed
 void AssignmentApp::PlayWrongAnswerSound() {
 	sound.setBuffer(buffer);
@@ -307,20 +286,7 @@ void AssignmentApp::updateGameOver(float deltaTime) {
 	}
 }
 
-void AssignmentApp::updateScoreBoard(float deltaTime) {
-
-	// input example
-	aie::Input* input = aie::Input::getInstance();
-
-	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
-		quit();
-	}
-	else if (input->isKeyDown(aie::INPUT_KEY_M)) {
-		currentGameState = MAIN_MENU;
-	}
-}
-
+// Draws the background panels and then draws the relevant state
 void AssignmentApp::draw() {
 
 	// wipe the screen to the background colour
@@ -349,14 +315,8 @@ void AssignmentApp::draw() {
 	case GAME_PLAY:
 		drawGamePlay(m_2dRenderer);
 		break;
-	case OPTIONS_MENU:
-		drawOptionsMenu(m_2dRenderer);
-		break;
 	case GAME_OVER:
 		drawGameOver(m_2dRenderer);
-		break;
-	case SCORE_BOARD:
-		drawScoreBoard(m_2dRenderer);
 		break;
 	default:
 		break;
@@ -366,6 +326,7 @@ void AssignmentApp::draw() {
 	m_2dRenderer->end();
 }
 
+// A general draw text function which takes in the text font and its position.
 void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], aie::Font* currentFont, float xOffset, float yOffset){
 	float textWidth = currentFont->getStringWidth(textToDisplay);
 	float textHeight = currentFont->getStringHeight(textToDisplay);
@@ -375,28 +336,31 @@ void AssignmentApp::drawText(aie::Renderer2D* renderer, char textToDisplay[], ai
 	renderer->drawText(currentFont, textToDisplay, centredPosX, centredPosY);
 }
 
+//  draw function for the splash screen
 void AssignmentApp::drawSplashScreen(aie::Renderer2D* renderer) {
-
-	
 	drawText(renderer,"Simon", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
 	drawText(renderer, "Press Enter", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 	drawText(renderer, "Press ESC to quit", mainFont, getWindowWidth() / 2.0f, 20.0f);
 
 }
 
+//  draw function for the Main menu screen
 void AssignmentApp::drawMainMenu(aie::Renderer2D* renderer) {
 	drawText(renderer, "Main Menu", headingFont, getWindowWidth() / 2.0f, getWindowHeight() *.75f);
 
 	playButton->Draw(renderer);
-	//optionsButton->Draw(renderer);
 	exitButton->Draw(renderer);
 }
 
+//  draw function for the game screen
+//	different  text will display depending what state of play it is in.
 void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
-	if (updateScore == true) {
+	// check if the score has been updated if it has update the score and set updatescore to false so it occurs only once.
+	if (updateScore == true) {	
 		correctAnswers = userEntered.getCount();
 		updateScore = false;
 	}
+
 	std::string scoreText =  "Score " + std::to_string(correctAnswers);
 	char cString[10];
 	strcpy(cString, scoreText.c_str());
@@ -427,12 +391,7 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 
 }
 
-void AssignmentApp::drawOptionsMenu(aie::Renderer2D* renderer) {
-	drawText(renderer, "Options Menu", headingFont, getWindowWidth() / 2.0f, getWindowHeight()  *.75f);
-
-	mainMenuButton->Draw(renderer);
-}
-
+//  draw function for the Game over screen
 void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
 
 	std::string scoreText = "Score " + std::to_string(correctAnswers);
@@ -443,9 +402,4 @@ void AssignmentApp::drawGameOver(aie::Renderer2D* renderer) {
 	drawText(renderer, "Game Over", splashFont, getWindowWidth() / 2.0f, getWindowHeight() / 2.0f);
 
 	mainMenuButton->Draw(renderer);
-}
-
-void AssignmentApp::drawScoreBoard(aie::Renderer2D* renderer) {
-	drawText(renderer, "Score", headingFont, getWindowWidth() / 2.0f, getWindowHeight()  *.75f);
-	drawText(renderer, "Press M", mainFont, getWindowWidth() / 2.0f, getWindowHeight() / 5.0f);
 }
