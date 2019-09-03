@@ -179,6 +179,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="CircleButton.h" />
     <ClInclude Include="DynamicArray.h" />
+    <ClInclude Include="MemoryLeakTester.h" />
     <ClInclude Include="ScrollingBackground.h" />
     <ClInclude Include="State.h" />
   </ItemGroup>

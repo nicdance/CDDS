@@ -23,16 +23,16 @@ bool AssignmentApp::startup() {
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
-	splashFont = new aie::Font("../bin/font/pricedown_bl.ttf", 300);
-	mainFont = new aie::Font("../bin/font/consolas.ttf", 32);
-	headingFont = new aie::Font("../bin/font/pricedown_bl.ttf", 150);
+	splashFont = new aie::Font("./bin/font/pricedown_bl.ttf", 300);
+	mainFont = new aie::Font("./bin/font/consolas.ttf", 32);
+	headingFont = new aie::Font("./bin/font/pricedown_bl.ttf", 150);
 
 
 	// This section sets up all the basic elements for the game
 	// including buttons textures sounds etc
-	optionsBtnTexture = new aie::Texture("../bin/textures/Settings_BTN.png");
-	playBtnTexture = new aie::Texture("../bin/textures/Play_BTN.png");
-	exitBtnTexture = new aie::Texture("../bin/textures/Close_BTN.png");
+	optionsBtnTexture = new aie::Texture("./bin/textures/Settings_BTN.png");
+	playBtnTexture = new aie::Texture("./bin/textures/Play_BTN.png");
+	exitBtnTexture = new aie::Texture("./bin/textures/Close_BTN.png");
 
 	playButton = new Button(playBtnTexture, getWindowWidth() / 2.0f- playBtnTexture->getWidth(), getWindowHeight() / 4.0f);
 	optionsButton = new Button(optionsBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f );
@@ -40,7 +40,7 @@ bool AssignmentApp::startup() {
 	mainMenuButton = new Button(exitBtnTexture, getWindowWidth() / 2.0f, getWindowHeight() / 4.0f);
 
 	background = new ScrollingBackground[3];
-	mainBackground = new aie::Texture("../bin/textures/BG.png");
+	mainBackground = new aie::Texture("./bin/textures/BG.png");
 	for (int i = 0; i < 3; i++)
 	{
 		background[i] = ScrollingBackground(mainBackground->getWidth() / 2 + (mainBackground->getWidth()*i), 
@@ -50,14 +50,14 @@ bool AssignmentApp::startup() {
 	DynamicArray correctOrder = DynamicArray();
 	DynamicArray userEntered = DynamicArray();
 
-	circleBtnTexture = new aie::Texture("../bin/textures/Planet.png");
+	circleBtnTexture = new aie::Texture("./bin/textures/Planet.png");
 	circleOffSet = circleBtnTexture->getWidth();
 	simonBtn = new CircleButton[4];
 	
-	simonBtn[0] = CircleButton(0, "../bin/Sound/a.wav", getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[1] = CircleButton(1, "../bin/Sound/c.wav", getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
-	simonBtn[2] = CircleButton(2, "../bin/Sound/lowE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
-	simonBtn[3] = CircleButton(3, "../bin/Sound/highE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[0] = CircleButton(0, "./bin/Sound/a.wav", getWindowWidth() / 2.0f+ circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[1] = CircleButton(1, "./bin/Sound/c.wav", getWindowWidth() / 2.0f- circleOffSet, getWindowHeight() / 2.0f, circleRadius, circleBtnTexture);
+	simonBtn[2] = CircleButton(2, "./bin/Sound/lowE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f+ circleOffSet, circleRadius, circleBtnTexture);
+	simonBtn[3] = CircleButton(3, "./bin/Sound/highE.wav", getWindowWidth() / 2.0f, getWindowHeight() / 2.0f- circleOffSet, circleRadius, circleBtnTexture);
 	
 	simonBtn[0].setColour(1.0f, 0.0f, 0.0f, 0.2f); // Red
 	simonBtn[1].setColour(1.0f, 1.0f, 0.0f, 0.2f); // Yellow
@@ -67,7 +67,7 @@ bool AssignmentApp::startup() {
 	//srand(time(nullptr));
 	srand(((unsigned int)(time(nullptr))));
 
-	buffer.loadFromFile("../bin/Sound/wrong.wav");
+	buffer.loadFromFile("./bin/Sound/wrong.wav");
 
 	return true;
 }
@@ -144,10 +144,7 @@ void AssignmentApp::updateSplashScreen(float deltaTime){
 void AssignmentApp::updateMainMenu(float deltaTime) {
 	
 	aie::Input* input = aie::Input::getInstance();
-	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE)) {
-		quit();
-	}
+
 	
 	// Detect if buttons are pressed and performs relevat action
 	if (playButton->Update())
@@ -294,7 +291,7 @@ int AssignmentApp::CheckGameover() {
 void AssignmentApp::PlayWrongAnswerSound() {
 	sound.setBuffer(buffer);
 
-	sound.setVolume(25);
+	sound.setVolume(15);
 	sound.play();
 }
 
@@ -408,9 +405,6 @@ void AssignmentApp::drawGamePlay(aie::Renderer2D* renderer) {
 	
 	switch (currentPlayState)
 	{
-	case START:
-		drawText(renderer, "Start", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);
-		break;
 	case PLAYSEQUENCE:
 		drawText(renderer, "Watch & Listen", mainFont, getWindowWidth() / 2.0f, getWindowHeight() *.8f);		
 		break;

@@ -71,8 +71,8 @@ public:
 	void PlayWrongAnswerSound();
 
 protected:
-	float const			waitTime =	800.0f;
-	float const			startTime = 1200.0f;
+	float const			waitTime =	500.0f;
+	float const			startTime = 1600.0f;
 	int					currentPlaying;
 	int					correctAnswers = 0;
 	bool				updateScore = false;
